@@ -38,8 +38,8 @@ export default function App() {
       setPartnerProtocols(protocols);
     });
     
-    socket.on('partner-joined', () => {
-      console.log('Partner joined the session');
+    socket.on('partner-joined', (data) => {
+      // Partner joined - they will send their protocols automatically
     });
     
     socket.on('partner-left', () => {
@@ -52,6 +52,16 @@ export default function App() {
       socket.off('partner-left');
     };
   }, []);
+
+  // Send initial protocols when sessionId is established
+  useEffect(() => {
+    if (sessionId) {
+      socket.emit('update-protocols', { 
+        sessionId, 
+        protocols: userProtocols 
+      });
+    }
+  }, [sessionId]);
 
   const updateProtocols = (newProtocols) => {
     setUserProtocols(newProtocols);
