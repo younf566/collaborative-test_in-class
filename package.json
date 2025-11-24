@@ -1,20 +1,17 @@
 {
-  "name": "week12b_shared-drawing-board",
+  "name": "protocol-labs-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "WebSocket backend for Protocol Labs collaborative boundary design tool",
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "keywords": [],
+  "keywords": ["websocket", "collaboration", "boundaries"],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^5.1.0",
-    "http": "^0.0.1-security",
-    "ngrok": "^5.0.0-beta.2",
     "socket.io": "^4.8.1"
   }
 }
