@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-// For local development - change this to your Render URL when deploying
-export const socket = io("http://localhost:3000", {
+// Production backend URL on Render
+export const socket = io("https://collaborative-test-in-class-np6q.onrender.com", {
   transports: ["websocket"],
 });
