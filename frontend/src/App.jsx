@@ -64,46 +64,38 @@ export default function App() {
   return (
     <div style={{ 
       minHeight: "100vh",
-      background: "#000000",
-      color: "#ffffff"
+      background: "#ffffff",
+      color: "#000000"
     }}>
       <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 20px" }}>
         
         {/* Header */}
-        <header style={{ textAlign: "center", marginBottom: "60px" }}>
+        <header style={{ textAlign: "left", marginBottom: "60px" }}>
           <h1 style={{ 
             fontSize: "3rem", 
-            fontWeight: "700",
-            color: "#ffffff",
+            fontWeight: "100",
+            color: "#000000",
             marginBottom: "16px",
             letterSpacing: "-0.02em"
           }}>
-            Protocol Labs
+            PROTOCOL LABS
           </h1>
-          <p style={{ 
-            fontSize: "1rem", 
-            color: "#888888",
-            maxWidth: "500px",
-            margin: "0 auto",
-            lineHeight: 1.5,
-            fontWeight: "400"
-          }}>
-            Collaborative boundary design for interpersonal protocols
-          </p>
+        
           
           {sessionId && (
             <div style={{
               marginTop: "24px",
               padding: "16px 24px",
-              background: "#111111",
-              border: "1px solid #333333",
+              background: "#ffffff",
+              border: "1px solid #000000",
               display: "inline-block",
-              fontSize: "14px"
+              fontSize: "14px",
+              fontWeight: "200"
             }}>
-              <span style={{ color: "#888888" }}>Session ID: </span>
-              <strong style={{ color: "#ffffff", fontFamily: "monospace" }}>{sessionId}</strong>
+              <span style={{ color: "#666666" }}>Session ID: </span>
+              <strong style={{ color: "#000000", fontFamily: "monospace" }}>{sessionId}</strong>
               {partnerProtocols && (
-                <span style={{ marginLeft: "24px", color: "#ffffff" }}>
+                <span style={{ marginLeft: "24px", color: "#000000" }}>
                   ● Partner Connected
                 </span>
               )}

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Collaboration Test</title>
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Testing Protocol Labs Collaboration</h1>
+    <div id="status">Connecting...</div>
+    <div id="session-info"></div>
+    <div id="partner-status">No partner connected</div>
+    
+    <script>
+        // Connect to the Render backend
+        const socket = io("https://collaborative-test-in-class-np6q.onrender.com");
+        
+        // Generate test session ID
+        const sessionId = "test-session-123";
+        document.getElementById('session-info').innerHTML = `Session ID: ${sessionId}`;
+        
+        // Test connection
+        socket.on('connect', () => {
+            document.getElementById('status').innerHTML = '✅ Connected to backend!';
+            console.log('Connected to backend');
+            
+            // Join test session
+            socket.emit('join-session', sessionId);
+        });
+        
+        socket.on('disconnect', () => {
+            document.getElementById('status').innerHTML = '❌ Disconnected';
+        });
+        
+        // Listen for partner events
+        socket.on('partner-joined', () => {
+            document.getElementById('partner-status').innerHTML = '👥 Partner joined!';
+            console.log('Partner joined');
+        });
+        
+        socket.on('partner-left', () => {
+            document.getElementById('partner-status').innerHTML = 'Partner left';
+            console.log('Partner left');
+        });
+        
+        socket.on('partner-protocols', (protocols) => {
+            console.log('Received partner protocols:', protocols);
+            document.getElementById('partner-status').innerHTML = `👥 Partner protocols received: Energy ${protocols.energyLevel}/10`;
+        });
+        
+        // Test sending protocols
+        setTimeout(() => {
+            const testProtocols = {
+                energyLevel: 7,
+                communicationMode: "async",
+                socialBattery: 8
+            };
+            socket.emit('update-protocols', { 
+                sessionId, 
+                protocols: testProtocols 
+            });
+            console.log('Sent test protocols');
+        }, 2000);
+    </script>
+</body>
+</html>

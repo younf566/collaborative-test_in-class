@@ -49,7 +49,7 @@ document.head.insertAdjacentHTML('beforeend', `
       appearance: none;
       width: 16px;
       height: 16px;
-      background: #000000ff;
+      background: #ffffff;
       cursor: pointer;
     }
     input[type="checkbox"] { width: 16px; height: 16px; padding: 0; accent-color: #ffffff; }

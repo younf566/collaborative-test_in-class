@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { socket } from "../socket";
+import Slider from "./Slider.jsx";
 
 export default function ProtocolBuilder({ 
   userProtocols, 
@@ -55,12 +56,12 @@ export default function ProtocolBuilder({
       
       {/* Navigation */}
       <nav style={{
-        background: "#111111",
+        background: "#ffffff",
         padding: "24px",
         height: "fit-content",
-        border: "1px solid #333333"
+        border: "1px solid #000000"
       }}>
-        <h3 style={{ marginBottom: "24px", fontSize: "12px", color: "#888888", textTransform: "uppercase", letterSpacing: "1px", fontWeight: "600" }}>Sections</h3>
+        <h3 style={{ marginBottom: "24px", fontSize: "12px", color: "#666666", textTransform: "uppercase", letterSpacing: "1px", fontWeight: "200" }}>Sections</h3>
         {Object.entries(sections).map(([key, section]) => (
           <button
             key={key}
@@ -72,14 +73,14 @@ export default function ProtocolBuilder({
               background: "transparent",
               border: "none",
               borderBottom: activeSection === key 
-                ? "2px solid #ffffff"
+                ? "2px solid #000000"
                 : "2px solid transparent",
-              color: activeSection === key ? "#ffffff" : "#888888",
+              color: activeSection === key ? "#000000" : "#666666",
               textAlign: "left",
               cursor: "pointer",
               marginBottom: "4px",
               fontSize: "14px",
-              fontWeight: activeSection === key ? "500" : "400",
+              fontWeight: activeSection === key ? "300" : "200",
               transition: "all 0.15s ease"
             }}
           >
@@ -92,16 +93,16 @@ export default function ProtocolBuilder({
           <div style={{
             marginTop: "40px",
             padding: "20px",
-            background: "#000000",
-            border: "1px solid #333333"
+            background: "#ffffff",
+            border: "1px solid #000000"
           }}>
-            <div style={{ fontSize: "12px", color: "#888888", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "1px" }}>
+            <div style={{ fontSize: "12px", color: "#666666", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "1px", fontWeight: "200" }}>
               Compatibility
             </div>
             <div style={{ 
               fontSize: "24px", 
-              fontWeight: "700",
-              color: "#ffffff"
+              fontWeight: "100",
+              color: "#000000"
             }}>
               {Math.round(compatibility * 100)}%
             </div>
@@ -111,9 +112,9 @@ export default function ProtocolBuilder({
 
       {/* Main Content */}
       <main style={{
-        background: "#111111",
+        background: "#ffffff",
         padding: "40px",
-        border: "1px solid #333333"
+        border: "1px solid #000000"
       }}>
         
         {/* Two-column layout for user and partner */}
@@ -127,9 +128,9 @@ export default function ProtocolBuilder({
           <div>
             <h3 style={{ 
               marginBottom: "32px", 
-              color: "#ffffff",
+              color: "#000000",
               fontSize: "18px",
-              fontWeight: "600"
+              fontWeight: "200"
             }}>
               Your Protocols
             </h3>
@@ -153,7 +154,7 @@ export default function ProtocolBuilder({
 
           {/* Divider */}
           {partnerProtocols && (
-            <div style={{ background: "#333333", width: "1px" }} />
+            <div style={{ background: "#000000", width: "1px" }} />
           )}
 
           {/* Partner Column */}
@@ -161,9 +162,9 @@ export default function ProtocolBuilder({
             <div>
               <h3 style={{ 
                 marginBottom: "32px", 
-                color: "#888888",
+                color: "#666666",
                 fontSize: "18px",
-                fontWeight: "600"
+                fontWeight: "200"
               }}>
                 Partner's Protocols
               </h3>
@@ -349,8 +350,8 @@ function TimelineSection({ protocols }) {
   return (
     <div>
       <div style={{ marginBottom: "40px" }}>
-        <h4 style={{ color: "#ffffff", marginBottom: "12px", fontSize: "16px", fontWeight: "600" }}>Futures Cone: Protocol Evolution</h4>
-        <p style={{ color: "#888888", fontSize: "14px", lineHeight: 1.5 }}>
+        <h4 style={{ color: "#000000", marginBottom: "12px", fontSize: "16px", fontWeight: "200" }}>Futures Cone: Protocol Evolution</h4>
+        <p style={{ color: "#666666", fontSize: "14px", lineHeight: 1.5, fontWeight: "200" }}>
           How today's boundary negotiations could evolve into tomorrow's social infrastructure
         </p>
       </div>
@@ -358,18 +359,18 @@ function TimelineSection({ protocols }) {
       {scenarios.map((scenario, index) => (
         <div key={index} style={{
           padding: "24px",
-          background: "#000000",
-          border: "1px solid #333333",
+          background: "#ffffff",
+          border: "1px solid #000000",
           marginBottom: "16px",
           position: "relative",
-          borderLeft: "3px solid #ffffff"
+          borderLeft: "3px solid #000000"
         }}>
           
           <h5 style={{ 
-            color: "#ffffff", 
+            color: "#000000", 
             margin: "0 0 12px 0",
             fontSize: "14px",
-            fontWeight: "600"
+            fontWeight: "300"
           }}>
             {scenario.timeframe}
           </h5>
@@ -377,15 +378,17 @@ function TimelineSection({ protocols }) {
             margin: "0 0 12px 0", 
             lineHeight: 1.5,
             fontSize: "14px",
-            color: "#ffffff"
+            color: "#000000",
+            fontWeight: "200"
           }}>
             {scenario.description}
           </p>
           <div style={{ 
-            color: "#888888", 
+            color: "#666666", 
             fontSize: "12px",
             textTransform: "uppercase",
-            letterSpacing: "0.5px"
+            letterSpacing: "0.5px",
+            fontWeight: "200"
           }}>
             Impact: {scenario.impact}
           </div>
@@ -405,40 +408,40 @@ function ProtocolField({ label, value, onChange, type, options, min, max, readOn
     display: "block",
     marginBottom: "8px",
     fontSize: "14px",
-    fontWeight: "500",
-    color: "#ffffff"
+    fontWeight: "300",
+    color: "#000000"
   };
   
   const inputStyle = {
     width: "100%",
     padding: "12px 16px",
-    background: readOnly ? "#0a0a0a" : "#000000",
-    border: `1px solid ${readOnly ? "#222222" : "#333333"}`,
-    color: "#ffffff",
-    fontSize: "14px"
+    background: readOnly ? "#f5f5f5" : "#ffffff",
+    border: `1px solid ${readOnly ? "#cccccc" : "#000000"}`,
+    color: "#000000",
+    fontSize: "14px",
+    fontWeight: "200"
   };
 
   return (
     <div style={fieldStyle}>
       <label style={labelStyle}>{label}</label>
       {description && (
-        <div style={{ fontSize: "12px", color: "#888888", marginBottom: "8px" }}>
+        <div style={{ fontSize: "12px", color: "#666666", marginBottom: "8px", fontWeight: "200" }}>
           {description}
         </div>
       )}
       
       {type === "slider" && (
         <div>
-          <input
-            type="range"
+          <Slider
             min={min}
             max={max}
             value={value}
             onChange={(e) => onChange(Number(e.target.value))}
             disabled={readOnly}
-            style={{ ...inputStyle, appearance: "none", height: "6px" }}
+            style={{ width: "100%", margin: "8px 0" }}
           />
-          <div style={{ textAlign: "right", marginTop: "8px", fontSize: "12px", color: "#888888" }}>
+          <div style={{ textAlign: "right", marginTop: "8px", fontSize: "12px", color: "#666666", fontWeight: "200" }}>
             {value}/{max}
           </div>
         </div>
