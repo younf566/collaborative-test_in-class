@@ -18,6 +18,19 @@ const io = new Server(server, {
 
 app.use(express.static("docs"));
 
+// Add a health check endpoint
+app.get("/", (req, res) => {
+  res.json({ 
+    message: "Protocol Labs Backend is running!", 
+    timestamp: new Date().toISOString(),
+    port: PORT 
+  });
+});
+
+app.get("/health", (req, res) => {
+  res.json({ status: "healthy", uptime: process.uptime() });
+});
+
 // Store active protocol sessions
 const protocolSessions = new Map();
 
