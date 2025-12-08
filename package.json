@@ -7,11 +7,18 @@
   "scripts": {
     "start": "node server.js"
   },
-  "keywords": ["websocket", "collaboration", "boundaries"],
+  "keywords": [
+    "websocket",
+    "collaboration",
+    "boundaries"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.4.2",
     "express": "^5.1.0",
-    "socket.io": "^4.8.1"
+    "socket.io": "^4.8.1",
+    "three": "^0.181.2"
   }
 }

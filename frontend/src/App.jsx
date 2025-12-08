@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import ProtocolBuilder from "./components/ProtocolBuilder.jsx";
+import NeighborhoodLab from "./components/NeighborhoodLab.jsx";
+import ThreeJSErrorBoundary from "./components/ThreeJSErrorBoundary.jsx";
 import { socket } from "./socket";
 
 export default function App() {
@@ -25,10 +27,14 @@ export default function App() {
     // Generate or get session ID
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('session') || Math.random().toString(36).substr(2, 9);
+    const isLab = urlParams.get('lab') === 'true';
     setSessionId(id);
     
-    // Update URL without refresh
-    window.history.replaceState({}, '', `?session=${id}`);
+    // If in lab mode, skip URL update to preserve lab parameter
+    if (!isLab) {
+      // Update URL without refresh
+      window.history.replaceState({}, '', `?session=${id}`);
+    }
     
     // Join session
     socket.emit('join-session', id);
@@ -71,6 +77,22 @@ export default function App() {
     });
   };
 
+  // Check if we should render the 3D lab
+  const urlParams = new URLSearchParams(window.location.search);
+  const isLab = urlParams.get('lab') === 'true';
+  
+  if (isLab) {
+    return (
+      <ThreeJSErrorBoundary>
+        <NeighborhoodLab 
+          userProtocols={userProtocols}
+          partnerProtocols={partnerProtocols}
+          sessionId={sessionId}
+        />
+      </ThreeJSErrorBoundary>
+    );
+  }
+
   return (
     <div style={{ 
       minHeight: "100vh",
@@ -111,6 +133,33 @@ export default function App() {
               )}
             </div>
           )}
+          
+          <div style={{ marginTop: "32px" }}>
+            <button
+              onClick={() => window.location.href = '?lab=true&session=' + sessionId}
+              style={{
+                background: "#000000",
+                color: "#ffffff", 
+                border: "none",
+                padding: "16px 32px",
+                fontSize: "14px",
+                fontWeight: "200",
+                cursor: "pointer",
+                fontFamily: "Inter, sans-serif",
+                marginRight: "16px"
+              }}
+            >
+              Enter 3D Neighborhood →
+            </button>
+            
+            <span style={{ 
+              fontSize: "12px", 
+              color: "#666666", 
+              fontWeight: "200" 
+            }}>
+              Visualize protocols in spatial context
+            </span>
+          </div>
         </header>
 
         <ProtocolBuilder 
