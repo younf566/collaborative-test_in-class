@@ -1,145 +1,173 @@
-import { useRef } from 'react';
+import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import ProtocolStoplight from './ProtocolStoplight';
 import ProtocolBench from './ProtocolBench';
+import DynamicBuilding from './DynamicBuilding';
+import ProtocolWeather from './ProtocolWeather';
 import * as THREE from 'three';
 
-export default function Neighborhood() {
+export default function Neighborhood({ userProtocols, partnerProtocols }) {
+  
+  // Calculate overall friction level from protocols
+  const frictionLevel = useMemo(() => {
+    if (!userProtocols || !partnerProtocols) return 0;
+    
+    const factors = [
+      Math.abs(userProtocols.energyLevel - partnerProtocols.energyLevel) / 10,
+      userProtocols.communicationMode === partnerProtocols.communicationMode ? 0 : 0.4,
+      userProtocols.interruptibility === partnerProtocols.interruptibility ? 0 : 0.3,
+      Math.abs(userProtocols.socialBattery - partnerProtocols.socialBattery) / 10
+    ];
+    
+    return Math.min(1, factors.reduce((a, b) => a + b, 0));
+  }, [userProtocols, partnerProtocols]);
+  
+  // Single user energy affects environment differently  
+  const userEnergy = userProtocols ? userProtocols.energyLevel / 10 : 0.5;
   
   return (
     <group>
       
-      {/* Ground Plane */}
-      <mesh position={[0, -0.1, 0]} receiveShadow>
-        <planeGeometry args={[30, 30]} />
-        <meshStandardMaterial color="#f0f0f0" />
+      {/* Protocol Weather System - sky changes based on social friction */}
+      <ProtocolWeather frictionLevel={frictionLevel} userEnergy={userEnergy} />
+      
+      {/* Dynamic Low-Poly Ground - morphs based on protocols */}
+      <mesh position={[0, -0.05, 0]} receiveShadow>
+        <planeGeometry args={[30, 30, 15, 15]} />
+        <meshStandardMaterial 
+          color={frictionLevel > 0.5 ? '#d4b8a3' : '#e8f0e8'} // Warmer when friction
+          wireframe={false}
+        />
       </mesh>
       
-      {/* Street Grid */}
+      {/* Dynamic Buildings - change based on protocol states */}
+      <DynamicBuilding 
+        position={[6, 0, 6]}
+        protocols={userProtocols}
+        frictionLevel={frictionLevel}
+        buildingType="social"
+      />
+      
+      <DynamicBuilding 
+        position={[-6, 0, 6]}
+        protocols={userProtocols}
+        frictionLevel={frictionLevel}
+        buildingType="work"
+      />
+      
+      <DynamicBuilding 
+        position={[6, 0, -6]}
+        protocols={partnerProtocols || userProtocols}
+        frictionLevel={frictionLevel}
+        buildingType="quiet"
+      />
+      
+      <DynamicBuilding 
+        position={[-6, 0, -6]}
+        protocols={partnerProtocols || userProtocols}
+        frictionLevel={frictionLevel}
+        buildingType="hybrid"
+      />
+      
+      {/* Friction-Responsive Street Network */}
       <group>
-        {/* Main Street (horizontal) */}
-        <mesh position={[0, 0, 0]}>
-          <boxGeometry args={[20, 0.02, 2]} />
-          <meshStandardMaterial color="#888888" />
-        </mesh>
-        
-        {/* Cross Street (vertical) */}
-        <mesh position={[0, 0, 0]} rotation={[0, Math.PI/2, 0]}>
-          <boxGeometry args={[20, 0.02, 2]} />
-          <meshStandardMaterial color="#888888" />
-        </mesh>
-        
-        {/* Crosswalk Stripes */}
-        {Array.from({length: 6}).map((_, i) => (
-          <mesh key={i} position={[-2.5 + i, 0.01, 0]}>
-            <boxGeometry args={[0.3, 0.01, 2]} />
-            <meshStandardMaterial color="#ffffff" />
-          </mesh>
-        ))}
-      </group>
-      
-      {/* Protocol-Aware Stoplights */}
-      <ProtocolStoplight position={[3, 0, 3]} />
-      <ProtocolStoplight position={[-3, 0, -3]} />
-      
-      {/* Protocol-Aware Benches */}
-      <ProtocolBench position={[5, 0, 1]} />
-      <ProtocolBench position={[-5, 0, -1]} />
-      
-      {/* Simple Building Blocks */}
-      <group>
-        {/* Building 1 */}
-        <mesh position={[8, 2, 8]} castShadow>
-          <boxGeometry args={[3, 4, 3]} />
-          <meshStandardMaterial color="#e0e0e0" />
-        </mesh>
-        
-        {/* Building 2 */}
-        <mesh position={[-8, 1.5, 8]} castShadow>
-          <boxGeometry args={[4, 3, 2]} />
-          <meshStandardMaterial color="#d0d0d0" />
-        </mesh>
-        
-        {/* Building 3 */}
-        <mesh position={[8, 1, -8]} castShadow>
-          <boxGeometry args={[2, 2, 4]} />
-          <meshStandardMaterial color="#c0c0c0" />
-        </mesh>
-        
-        {/* Building 4 */}
-        <mesh position={[-8, 2.5, -8]} castShadow>
-          <boxGeometry args={[3, 5, 3]} />
-          <meshStandardMaterial color="#b0b0b0" />
-        </mesh>
-      </group>
-      
-      {/* Trees/Green Spaces */}
-      <group>
-        {Array.from({length: 8}).map((_, i) => {
-          const angle = (i / 8) * Math.PI * 2;
-          const radius = 12;
-          const x = Math.cos(angle) * radius;
-          const z = Math.sin(angle) * radius;
-          
+        {/* Main streets that get more jagged with friction */}
+        {Array.from({length: 3}).map((_, i) => {
+          const offset = (i - 1) * 8;
           return (
-            <group key={i} position={[x, 0, z]}>
-              {/* Tree trunk */}
-              <mesh position={[0, 1, 0]}>
-                <cylinderGeometry args={[0.2, 0.2, 2]} />
-                <meshStandardMaterial color="#8B4513" />
-              </mesh>
-              
-              {/* Tree canopy */}
-              <mesh position={[0, 2.5, 0]}>
-                <sphereGeometry args={[1.2, 8, 6]} />
-                <meshStandardMaterial color="#228B22" />
-              </mesh>
-            </group>
+            <mesh key={`street-h-${i}`} position={[0, 0.01, offset]}>
+              <boxGeometry args={[20, 0.02, 1 + frictionLevel]} />
+              <meshStandardMaterial 
+                color={frictionLevel > 0.6 ? '#cc6666' : '#888888'}
+              />
+            </mesh>
+          );
+        })}
+        
+        {Array.from({length: 3}).map((_, i) => {
+          const offset = (i - 1) * 8;
+          return (
+            <mesh key={`street-v-${i}`} position={[offset, 0.01, 0]} rotation={[0, Math.PI/2, 0]}>
+              <boxGeometry args={[20, 0.02, 1 + frictionLevel]} />
+              <meshStandardMaterial 
+                color={frictionLevel > 0.6 ? '#cc6666' : '#888888'}
+              />
+            </mesh>
           );
         })}
       </group>
       
-      {/* Quiet Zones */}
+      {/* Protocol-Aware Interactive Objects */}
+      <ProtocolBench 
+        position={[3, 0, 2]} 
+        rotation={[0, Math.PI/4, 0]} 
+        benchId="social-bench-1"
+        frictionLevel={frictionLevel}
+      />
+      
+      <ProtocolBench 
+        position={[-2, 0, 4]} 
+        rotation={[0, -Math.PI/3, 0]}
+        benchId="quiet-bench-1" 
+        frictionLevel={frictionLevel}
+      />
+      
+      <ProtocolStoplight 
+        position={[4, 0, 0]} 
+        frictionLevel={frictionLevel}
+      />
+      
+      <ProtocolStoplight 
+        position={[-4, 0, 0]} 
+        frictionLevel={frictionLevel}
+      />
+      
+      {/* Dynamic Protocol Zones that shift with energy */}
       <group>
-        <mesh position={[6, 0.01, -2]}>
-          <circleGeometry args={[2, 16]} />
+        {/* Energy-responsive social zones */}
+        <mesh position={[2, 0.01, 3]} rotation={[-Math.PI/2, 0, 0]}>
+          <circleGeometry args={[1.5 + userEnergy, 8]} />
           <meshStandardMaterial 
-            color="#e8f5e8" 
+            color={userEnergy > 0.7 ? '#ffee88' : '#88eeaa'}
             transparent 
-            opacity={0.6}
+            opacity={0.3 + userEnergy * 0.2}
+            side={THREE.DoubleSide}
           />
         </mesh>
         
-        <mesh position={[-6, 0.01, 2]}>
-          <circleGeometry args={[2, 16]} />
+        <mesh position={[-2, 0.01, -3]} rotation={[-Math.PI/2, 0, 0]}>
+          <circleGeometry args={[1.2 + (1 - userEnergy), 6]} />
           <meshStandardMaterial 
-            color="#e8f5e8" 
+            color={userEnergy < 0.3 ? '#aaccff' : '#ccaaff'}
             transparent 
-            opacity={0.6}
+            opacity={0.4 - userEnergy * 0.2}
+            side={THREE.DoubleSide}
           />
         </mesh>
       </group>
       
-      {/* Social Zones */}
-      <group>
-        <mesh position={[2, 0.01, 6]}>
-          <circleGeometry args={[2.5, 16]} />
-          <meshStandardMaterial 
-            color="#fff5e6" 
-            transparent 
-            opacity={0.6}
-          />
-        </mesh>
-        
-        <mesh position={[-2, 0.01, -6]}>
-          <circleGeometry args={[2.5, 16]} />
-          <meshStandardMaterial 
-            color="#fff5e6" 
-            transparent 
-            opacity={0.6}
-          />
-        </mesh>
-      </group>
+      {/* Friction Visualization - barriers appear when protocols clash */}
+      {frictionLevel > 0.4 && (
+        <group>
+          {Array.from({length: Math.floor(frictionLevel * 6)}).map((_, i) => {
+            const angle = (i / 6) * Math.PI * 2;
+            const radius = 3 + frictionLevel * 2;
+            const x = Math.cos(angle) * radius;
+            const z = Math.sin(angle) * radius;
+            
+            return (
+              <mesh key={`friction-${i}`} position={[x, 0.5, z]}>
+                <boxGeometry args={[0.2, frictionLevel * 2, 0.2]} />
+                <meshStandardMaterial 
+                  color="#ff4444"
+                  transparent
+                  opacity={frictionLevel}
+                />
+              </mesh>
+            );
+          })}
+        </group>
+      )}
       
     </group>
   );

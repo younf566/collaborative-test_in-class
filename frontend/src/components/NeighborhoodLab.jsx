@@ -64,13 +64,13 @@ export default function NeighborhoodLab({
       {/* 3D Canvas */}
       <Canvas
         camera={{ 
-          position: [15, 12, 15], 
-          fov: 50,
+          position: [8, 8, 8], 
+          fov: 60,
           near: 0.1,
           far: 1000
         }}
         shadows
-        style={{ background: '#e8f4f8' }}
+        style={{ background: '#f0f4f8' }}
       >
         <Suspense fallback={null}>
           
@@ -100,29 +100,29 @@ export default function NeighborhoodLab({
           {/* Neighborhood Environment */}
           <Neighborhood />
           
-          {/* User Avatar */}
+          {/* User Avatar - positioned at a key location in your neighborhood */}
           <ProtocolAvatar
-            position={[-2, 0, 2]}
+            position={[2, 0, 1]}
             protocols={userProtocols}
             isUser={true}
           />
           
-          {/* Partner Avatar (if connected) */}
+          {/* Partner Avatar (if connected) - positioned nearby but with space for interaction */}
           {partnerProtocols && (
             <ProtocolAvatar
-              position={[2, 0, 2]}
+              position={[-1, 0, 3]}
               protocols={partnerProtocols}
               isUser={false}
             />
           )}
           
-          {/* Protocol Negotiation Visualization */}
+          {/* Protocol Negotiation Visualization - connects the two avatars */}
           {partnerProtocols && (
             <ProtocolNegotiation
               userProtocols={userProtocols}
               partnerProtocols={partnerProtocols}
-              userPosition={[-2, 0, 2]}
-              partnerPosition={[2, 0, 2]}
+              userPosition={[2, 0, 1]}
+              partnerPosition={[-1, 0, 3]}
             />
           )}
           

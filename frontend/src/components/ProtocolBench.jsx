@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
-export default function ProtocolBench({ position }) {
+export default function ProtocolBench({ position, rotation = [0, 0, 0], benchId = "default" }) {
   const benchRef = useRef();
   const auraRef = useRef();
   const [occupancyState, setOccupancyState] = useState('empty'); // empty, compatible, incompatible, full
@@ -29,18 +29,31 @@ export default function ProtocolBench({ position }) {
   });
   
   const getAuraColor = () => {
-    // Green = welcoming, Yellow = neutral, Red = avoid
-    if (socialHeat < 0.3) return '#44ff88'; // Welcome
-    if (socialHeat < 0.7) return '#ffff44'; // Neutral  
-    return '#ff8844'; // Crowded/incompatible
+    // Base color depends on bench type
+    const baseColors = {
+      social: '#ffaa44', // Orange for social
+      quiet: '#88ff88',  // Green for quiet  
+      focus: '#4488ff'   // Blue for focus
+    };
+    
+    const baseColor = baseColors[benchType] || '#ffff44';
+    
+    // Modify based on social heat
+    if (socialHeat < 0.3) return baseColor; // Normal
+    if (socialHeat < 0.7) return '#ffff44'; // Getting crowded
+    return '#ff4444'; // Too crowded
   };
   
   const getAuraOpacity = () => {
     return 0.2 + socialHeat * 0.3;
   };
   
+  // Determine bench type based on ID
+  const benchType = benchId.includes('social') ? 'social' : 
+                   benchId.includes('quiet') ? 'quiet' : 'focus';
+  
   return (
-    <group position={position}>
+    <group position={position} rotation={rotation}>
       
       {/* Bench Base */}
       <group ref={benchRef}>
