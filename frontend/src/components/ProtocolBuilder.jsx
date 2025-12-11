@@ -121,7 +121,7 @@ export default function ProtocolBuilder({
         <div style={{ 
           display: "grid", 
           gridTemplateColumns: partnerProtocols ? "1fr 1px 1fr" : "1fr",
-          gap: partnerProtocols ? "40px" : "0"
+          gap: partnerProtocols ? "40px" : "0" 
         }}>
           
           {/* User Column */}
