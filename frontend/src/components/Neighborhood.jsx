@@ -426,7 +426,8 @@ export default Neighborhood;
   // Load low_poly_house.glb from public; if missing, render nothing
   let gltf = null;
   try {
-    gltf = useGLTF('/low_poly_house.glb');
+    const base = import.meta.env.BASE_URL || '/';
+    gltf = useGLTF(`${base}low_poly_house.glb`);
   } catch (e) {
     gltf = null;
   }

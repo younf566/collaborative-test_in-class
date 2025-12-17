@@ -4,7 +4,7 @@ import NeighborhoodLab from "./components/NeighborhoodLab.jsx";
 import { socket } from "./socket";
 
 export default function App() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [userProtocols, setUserProtocols] = useState({
     energyLevel: 7,
     communicationMode: "async",
@@ -71,10 +71,6 @@ export default function App() {
 
   return (
     <>
-      {isLoading && (
-        <LoadingScreen onComplete={() => setIsLoading(false)} />
-      )}
-      
       {!isLoading && (
         <NeighborhoodLab 
           userProtocols={userProtocols}
